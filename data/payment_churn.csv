@@ -1,0 +1,5 @@
+PaymentMethod,AvgMonthlyCharges,Total,Churned,ChurnRatePercent
+Electronic check,76.26,2365,1071,45.29
+Mailed check,43.92,1612,308,19.11
+Bank transfer (automatic),67.19,1544,258,16.71
+Credit card (automatic),66.51,1522,232,15.24

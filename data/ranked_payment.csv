@@ -1,0 +1,5 @@
+PaymentMethod,ChurnRatePercent,Rank
+Electronic check,45.29,1
+Mailed check,19.11,2
+Bank transfer (automatic),16.71,3
+Credit card (automatic),15.24,4
