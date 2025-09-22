@@ -1,0 +1,5 @@
+Risk_Segment,Churned,Total,ChurnRate
+High Risk,566,814,69.53
+Low Risk,149,1405,10.6
+Medium Risk,198,1761,11.24
+Medium-High Risk,956,3063,31.21
