@@ -97,6 +97,9 @@ These questions align with real-world telecom challenges, helping businesses lik
 
 * **3. Download the Power BI file** [Telco Churn Dashboard](data/Telco_powerbi_dashboard.pbix) from the repo and open in Power BI Desktop.
 
+**DashBoard PDF:** Download this Dashboard
+* [Telco churn analysis dashboard](data/Telco_powerbi_dashboard.pdf)
+
 * **4. Run notebooks in Jupyter**
   ``` jupyter notebook```
   * [clean&aggregate_data.ipynb](Analyze_data/clean&aggregate_data.ipynb):Data loading and SQL aggregation.
