@@ -18,6 +18,11 @@ This portfolio project showcases end-to-end data analytics: from raw data to int
 **DashBoard PDF:** Download this Dashboard
 * [Telco churn analysis dashboard](data/Telco_powerbi_dashboard.pdf)
 
+ **Download the Power BI file:** 
+ 
+ * [Telco Churn Dashboard](data/Telco_powerbi_dashboard.pbix) from the repo and open in Power BI Desktop.
+
+
 ## Executive Summary Page
 ![Executive Summary page](assets/Executive_summary_page.png.png)
 *Overview of key metrics: Total Customers (7K), Churned (1.87K), Retention Rate (73.46%), and Dynamic Savings.*
