@@ -14,6 +14,10 @@ Key highlights:
 This portfolio project showcases end-to-end data analytics: from raw data to interactive visualizations and ROI-driven recommendations. 
 
 # Dashboard Screenshots
+
+**DashBoard PDF:** Download this Dashboard
+* [Telco churn analysis dashboard](data/Telco_powerbi_dashboard.pdf)
+
 ## Executive Summary Page
 ![Executive Summary page](assets/Executive_summary_page.png.png)
 *Overview of key metrics: Total Customers (7K), Churned (1.87K), Retention Rate (73.46%), and Dynamic Savings.*
@@ -97,8 +101,6 @@ These questions align with real-world telecom challenges, helping businesses lik
 
 * **3. Download the Power BI file** [Telco Churn Dashboard](data/Telco_powerbi_dashboard.pbix) from the repo and open in Power BI Desktop.
 
-**DashBoard PDF:** Download this Dashboard
-* [Telco churn analysis dashboard](data/Telco_powerbi_dashboard.pdf)
 
 * **4. Run notebooks in Jupyter**
   ``` jupyter notebook```
