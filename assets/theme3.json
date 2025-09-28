@@ -1,0 +1,39 @@
+{
+  "name": "BlueOrangeExecutiveDarkPlus",
+  "dataColors": [
+    "#4DA3FF",  
+    "#FF8C00",  
+    "#1E90FF",  
+    "#FFA500",  
+    "#66C2FF",  
+    "#FFB84D"   
+  ],
+  "background": "#121212",
+  "foreground": "#FFFFFF",
+  "tableAccent": "#FF8C00",
+  "visualStyles": {
+    "*": {
+      "*": {
+        "title": [{
+          "color": { "solid": { "color": "#FFFFFF" } },
+          "fontSize": 15,
+          "fontFamily": "Segoe UI Semibold"
+        }],
+        "labels": [{
+          "color": { "solid": { "color": "#CCCCCC" } },
+          "fontSize": 12,
+          "fontFamily": "Segoe UI"
+        }],
+        "callout": [{
+          "color": { "solid": { "color": "#FF8C00" } },
+          "fontSize": 20,
+          "fontFamily": "Segoe UI Bold"
+        }]
+      }
+    }
+  },
+  "wallpaper": {
+    "color": { "solid": { "color": "#121212" } },
+    "transparency": 0
+  }
+}
