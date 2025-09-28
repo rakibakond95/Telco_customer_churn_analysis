@@ -80,24 +80,24 @@ These questions align with real-world telecom challenges, helping businesses lik
 
 # Technologies Used
 
-**Python:** Data cleaning, aggregation, EDA, RFM segmentation (Pandas, NumPy, Seaborn, Matplotlib).
+* **Python:** Data cleaning, aggregation, EDA, RFM segmentation (Pandas, NumPy, Seaborn, Matplotlib).
 
-**Power BI:** Interactive dashboard with DAX measures, AI visuals (key influencers, decomposition trees), what-if parameters.
+* **Power BI:** Interactive dashboard with DAX measures, AI visuals (key influencers, decomposition trees), what-if parameters.
 
-**SQL:** Data aggregation via SQLite in Python notebooks.
+* **SQL:** Data aggregation via SQLite in Python notebooks.
 
-**Dataset:** Telco Customer Churn (7K rows, 21 features) – cleaned and segmented versions included.
+* **Dataset:** Telco Customer Churn (7K rows, 21 features) – cleaned and segmented versions included.
 # Installation & Setup
-**1. Clone the repo:**
+* **1. Clone the repo:**
 [Telco Churn Analysis](https://github.com/rakibakond95/Telco_customer_churn_analysis.git)
 
-**2. Install Python dependencies**
+* **2. Install Python dependencies**
 
 ``` pip install -r requirements.txt  # Includes pandas, numpy, seaborn, matplotlib, sqlite3 ```
 
-**3. Download the Power BI file** [Telco Churn Dashboard](data/Telco_powerbi_dashboard.pbix) from the repo and open in Power BI Desktop.
+* **3. Download the Power BI file** [Telco Churn Dashboard](data/Telco_powerbi_dashboard.pbix) from the repo and open in Power BI Desktop.
 
-**4. Run notebooks in Jupyter**
+* **4. Run notebooks in Jupyter**
   ``` jupyter notebook```
   * [clean&aggregate_data.ipynb](Analyze_data/clean&aggregate_data.ipynb):Data loading and SQL aggregation.
   * [EDA.ipynb](Analyze_data/EDA.ipynb):Visualizations and insights.
@@ -132,9 +132,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 # Contact & Hire Me
 
-**LinkedIn:** [Rakib Akond](https://www.linkedin.com/in/rakibakond) – Let's connect for data analytics opportunities!
+* **LinkedIn:** [Rakib Akond](https://www.linkedin.com/in/rakibakond) – Let's connect for data analytics opportunities!
 
-**Email:** rakibakond95@gmail.com
+* **Email:** rakibakond95@gmail.com
+
+# Python Code Snippets Example
 
 ## 1. Data Cleaning & Aggregation (from [clean&aggregate_data.ipynb](Analyze_data/clean&aggregate_data.ipynb))
 This snippet shows Pandas data loading, options setting, and basic aggregation – highlights efficiency in handling datasets.
@@ -223,4 +225,190 @@ telco['Risk_Segment'] = telco.apply(assign_risk, axis=1)
 sns.barplot(x='Risk_Segment', y='ChurnBinary', data=telco)
 plt.title('Churn Rate by Risk Segment')
 plt.show()
+```
+
+# SQL Highlights
+Data aggregation on SQL via SQLite on Jupyter Notebook
+[clean&aggregate_data.ipynb](Analyze_data/clean&aggregate_data.ipynb)
+### Setup: Load Data into SQLite
+
+```sql
+import pandas as pd
+import sqlite3
+
+# Load data (replace with your path; using cleaned CSV from notebook)
+telco = pd.read_csv('../data/telco_churn_cleaned_updated.csv')
+
+# Create SQLite connection and load data
+conn = sqlite3.connect(':memory:')  # In-memory for testing
+telco.to_sql('telco', conn, index=False)
+```
+### 1. Churn Rate by Contract Type
+This query calculates total customers, churned count, and churn rate per contract—mirroring the Pandas groupby for dashboard visuals.
+
+```sql
+--  Data is in a 'telco' table after loading via SQLAlchemy
+SELECT 
+    Contract,
+    COUNT(*) AS TotalCustomers,
+    SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) AS ChurnedCustomers,
+    ROUND(100.0 * SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) / COUNT(*), 2) AS ChurnRatePercent
+FROM telco
+GROUP BY Contract
+ORDER BY ChurnRatePercent DESC;
+```
+| Contract       | Total Customers | Churned Customers | Churn Rate (%) |
+| -------------- | --------------- | ----------------- | -------------- |
+| Month-to-month | 3,875           | 1,655             | 42.71          |
+| One year       | 1,473           | 166               | 11.27          |
+| Two year       | 1,695           | 48                | 2.83           |
+
+### 2. Churn Rate by Payment Method
+Aggregates churn by payment type, useful for identifying high-risk methods like electronic check (45% churn).
+```sql
+SELECT 
+    PaymentMethod,
+    COUNT(*) AS TotalCustomers,
+    SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) AS ChurnedCustomers,
+    ROUND(100.0 * SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) / COUNT(*), 2) AS ChurnRatePercent
+FROM telco
+GROUP BY PaymentMethod
+ORDER BY ChurnRatePercent DESC;
+```
+| Payment Method            | Total Customers | Churned Customers | Churn Rate (%) |
+| ------------------------- | --------------- | ----------------- | -------------- |
+| Electronic check          | 2,365           | 1,071             | 45.29          |
+| Mailed check              | 1,612           | 308               | 19.11          |
+| Bank transfer (automatic) | 1,544           | 258               | 16.71          |
+| Credit card (automatic)   | 1,522           | 232               | 15.24          |
+### 3. RFM Segmentation Setup (Prep for Analysis)
+This creates a view for RFM scores, joining with churn for risk analysis—prepares data for Power BI import.
+```sql
+CREATE VIEW rfm_view AS
+SELECT 
+    customerID,
+    tenure AS Recency,
+    (CASE WHEN PhoneService = 'Yes' THEN 1 ELSE 0 END + 
+     CASE WHEN MultipleLines = 'Yes' THEN 1 ELSE 0 END + 
+     -- Add other services...
+    ) AS Frequency,  -- Proxy for TotalServices
+    TotalCharges AS Monetary,
+    Churn
+FROM telco;
+
+-- Then query churn by RFM bins (simplified)
+SELECT 
+    CASE 
+        WHEN Recency <= 6 THEN 'Low Recency (High Risk)'
+        ELSE 'High Recency (Low Risk)'
+    END AS RecencyBin,
+    ROUND(100.0 * SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) / COUNT(*), 2) AS ChurnRatePercent
+FROM rfm_view
+GROUP BY RecencyBin;
+```
+
+
+
+# Power BI DAX used in this project
+
+```DAX
+1. Total Customers = COUNTROWS('telco_churn_cleaned')
+
+2. Revenue Lost = CALCULATE(SUM(telco_churn_cleaned[MonthlyCharges]), telco_churn_cleaned[ChurnBinary] = 1)
+
+3. Retention Rate = [Retained Customers]/[Total Customers]
+
+4. Retained Customers = [Total Customers]-[Churned Customers]
+
+5. Churned Customers = CALCULATE([Total Customers], 'telco_churn_cleaned'[ChurnBinary] = 1)
+
+6. Avg Tenure = AVERAGE('telco_churn_cleaned'[tenure])
+7. Avg Monthly Charges = AVERAGE('telco_churn_cleaned'[MonthlyCharges])
+
+8. At-Risk Newbies Savings $ = CALCULATE([Churned Customers], 'rfm_churn'[RFM_Segment] = "At-Risk Newbies") * 150 * 0.2
+
+9. At-Risk Newbies Impact $ = CALCULATE([Churned Customers], 'rfm_churn'[RFM_Segment] = "At-Risk Newbies") * 150 * 0.2
+
+10. Risk Churn Rate % = DIVIDE(SUM('risk_churn'[Churned]), SUM('risk_churn'[Total]), 0) * 100
+
+11. Retention Savings $ = [Churned Customers] * 150 * 0.2
+
+12. RFM Churn Rate % = DIVIDE(SUM('rfm_churn'[Churned]), SUM('rfm_churn'[Total]), 0) * 100
+
+13. Contract Churn Rate % = DIVIDE(SUM('contract_churn'[Churned]),([Total Customers]) )
+
+```
+# DAX for What-if analysis
+```DAX
+1. -- Month-to-Month group
+MTM_Customers =
+CALCULATE(
+    COUNTROWS( telco_churn_cleaned ),
+    telco_churn_cleaned[Contract] = "Month-to-month"
+)
+
+2. MTM_ChurnCount =
+CALCULATE(
+    COUNTROWS( telco_churn_cleaned ),
+    telco_churn_cleaned[Contract] = "Month-to-month" &&
+    (telco_churn_cleaned[ChurnBinary] = 1)
+)
+
+3. MTM_ChurnRate =
+DIVIDE( [MTM_ChurnCount], [MTM_Customers], 0 )
+
+4. -- One-year contract group
+OneYear_Customers =
+CALCULATE(
+    COUNTROWS( telco_churn_cleaned ),
+    telco_churn_cleaned[Contract] = "One year"
+)
+
+5. OneYear_ChurnCount =
+CALCULATE(
+    COUNTROWS( telco_churn_cleaned ),
+    telco_churn_cleaned[Contract] = "One year" &&
+    (telco_churn_cleaned[ChurnBinary] = 1)
+)
+
+6. OneYear_ChurnRate =
+DIVIDE( [OneYear_ChurnCount], [OneYear_Customers], 0 )
+
+-----Simulation DAX
+
+7. Converted_MTM_Customers =
+ROUND( [MTM_Customers] * [ConvertToAnnualPercent Value], 0 )
+
+8. Projected_MTM_Churners =
+VAR p = [ConvertToAnnualPercent Value]
+VAR mtmCust = [MTM_Customers]
+VAR mtmRate = [MTM_ChurnRate]
+VAR oneyrRate = [OneYear_ChurnRate]
+RETURN
+    mtmCust * ( (1 - p) * mtmRate + p * oneyrRate )
+
+9. Projected_Total_Churners =
+VAR currentAll = [ChurnCount]
+VAR mtmBefore = [MTM_ChurnCount]
+VAR mtmAfter = [Projected_MTM_Churners]
+RETURN
+    currentAll - mtmBefore + mtmAfter
+
+10. Projected_ChurnRate =
+DIVIDE( [Projected_Total_Churners], [TotalCustomers], 0 )
+
+11. AvgMonthly_MTM =
+CALCULATE(
+    AVERAGE( telco_churn_cleaned[MonthlyCharges] ),
+    telco_churn_cleaned[Contract] = "Month-to-month"
+)
+
+12. MonthlyRevenueSaved =
+VAR saved_customers = [MTM_ChurnCount] - [Projected_MTM_Churners]
+RETURN
+    IF( saved_customers > 0, saved_customers * [AvgMonthly_MTM], 0 )
+
+13. AnnualRevenueSaved = [MonthlyRevenueSaved] * 12
+
+
 ```
